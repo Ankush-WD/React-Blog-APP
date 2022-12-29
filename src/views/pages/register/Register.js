@@ -56,7 +56,7 @@ const Register = () => {
       setTimeout(function () {
         dispatch(clearStateValue());
         navigate("/login");
-      }, 4000);
+      }, 3000);
     }
   }, [status]);
 
@@ -186,11 +186,11 @@ const Register = () => {
                   <div className="d-grid">
                     <CButton color="success" type="submit">
                       {status == "pending" ? (
-                        <CSpinner color="dark" size="sm" />
+                        <CSpinner color="light" size="sm" />
                       ) : (
                         ""
                       )}
-                      &nbsp;Create Account
+                      &nbsp;&nbsp;Create Account
                     </CButton>
                   </div>
                 </CForm>

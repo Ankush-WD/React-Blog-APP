@@ -21,7 +21,7 @@ import CIcon from "@coreui/icons-react";
 import { cilLockLocked, cilUser } from "@coreui/icons";
 import loginSchema from "src/validationSchema/loginSchema";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "src/redux/slice/authSlice";
+import { logIn,clearStateValue } from "src/redux/slice/authSlice";
 
 const Login = () => {
   const { isLoggedIn, message, status } = useSelector((state) => state.auth);
@@ -47,6 +47,7 @@ const Login = () => {
   const { handleChange, handleBlur, touched, errors, values } = formik;
   useEffect(() => {
     if (isLoggedIn) {
+      dispatch(clearStateValue());
       navigate("/dashboard");
     }
   }, [isLoggedIn]);
@@ -115,11 +116,11 @@ const Login = () => {
                       <CCol xs={6}>
                         <CButton color="primary" className="px-4" type="submit">
                           {status == "pending" ? (
-                            <CSpinner color="dark" size="sm" />
+                            <CSpinner color="light" size="sm" />
                           ) : (
                             ""
                           )}
-                          Login
+                          &nbsp;&nbsp;Login
                         </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">

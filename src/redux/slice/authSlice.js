@@ -15,8 +15,9 @@ export const logIn = createAsyncThunk(
         },
         params: { email, password },
       };
-      const data = await axios.get(login_url, config);
-      return data.data;
+      const result = await axios.get(login_url, config);
+      localStorage.setItem("token", result.data.data.token)
+      return result.data;
     } catch (e) {
       return thunkAPI.rejectWithValue(e.response.data);
     }
@@ -48,7 +49,6 @@ const slice = createSlice({
   initialState: {
     user: null,
     isLoggedIn: false,
-    token: null,
     message: null,
     status:null
   },
@@ -56,15 +56,19 @@ const slice = createSlice({
     clearStateValue: (state, action) => {
       state.message = null;
       state.status = null;
+    },
+    logOut:(state, action) => {
+      state.user = null;
       state.isLoggedIn = false;
+      state.message = null;
+      state.status = null;
     },
   },
   extraReducers: {
     [logIn.fulfilled]: (state, { payload }) => {
       state.user = { ...payload.data };
-      state.token = payload.data.token;
       state.isLoggedIn = true;
-      state.status = "sucess";
+      state.status = "success";
     },
     [logIn.pending]: (state) => {
       state.status = "pending";
@@ -88,4 +92,4 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
-export const { clearStateValue } = slice.actions;
+export const { clearStateValue, logOut } = slice.actions;

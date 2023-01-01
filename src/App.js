@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import "./scss/style.scss";
 import PrivateRoutes from "./components/PrivateRoutes";
-import PubicRoutes from "./components/PubicRoutes";
+import PublicRoutes from "./components/PublicRoutes";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -30,9 +30,9 @@ const App = () => {
             path="/login"
             name="Login Page"
             element={
-              <PubicRoutes>
+              <PublicRoutes>
                 <Login />
-              </PubicRoutes>
+              </PublicRoutes>
             }
           />
           <Route
@@ -40,9 +40,9 @@ const App = () => {
             path="/register"
             name="Register Page"
             element={
-              <PubicRoutes>
+              <PublicRoutes>
                 <Register />
-              </PubicRoutes>
+              </PublicRoutes>
             }
           />
           <Route exact path="/404" name="Page 404" element={<Page404 />} />

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 const PrivateRoutes =({ children })=> {
     const authUser = useSelector( state=> state.auth);
-    console.log(authUser);
     
     if (!authUser.isLoggedIn) {
         // not logged in so redirect to login page with the return url

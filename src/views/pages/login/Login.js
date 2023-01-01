@@ -19,9 +19,9 @@ import {
 import { useFormik } from "formik";
 import CIcon from "@coreui/icons-react";
 import { cilLockLocked, cilUser } from "@coreui/icons";
-import loginSchema from "src/validationSchema/loginSchema";
+import loginSchema from "../../../validationSchema/loginSchema";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn,clearStateValue } from "src/redux/slice/authSlice";
+import { logIn,clearStateValue } from "../../../redux/slice/authSlice";
 
 const Login = () => {
   const { isLoggedIn, message, status } = useSelector((state) => state.auth);

@@ -5,34 +5,26 @@ import {
   CCardBody,
   CCardHeader,
   CCol,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableCaption,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
   CButton,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { cilBell } from "@coreui/icons";
 import { useSelector } from "react-redux";
-import { DocsExample } from "../../components";
+import { usePagination, useSortBy, useTable } from "react-table";
+import Pagination from "../Pagination";
+import CustomeTable from "../CustomeTable";
 
 const userList = () => {
   const user = useSelector((state) => state.auth.user);
-  const [status, setStatus] = useState("");
-  const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState("");
-  const [userData, setUserData] = useState({});
-
-  useEffect(() => {
-    loadUserList();
-  }, []);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalPage, setTotalPage] = useState(0);
+  const [page, setPage] = useState(1);
+  const [searchText, setSearchText] = useState("");
+  const [sizePerPage, setSizePerPage] = useState(2);
+  const [userData, setUserData] = useState([]);
 
   async function loadUserList() {
-    setStatus("pending");
+    setIsLoading(true);
     const user_list_url = process.env.REACT_APP_API_URL + "/v1/user/list";
     const token = user.passport_token.access_token;
 
@@ -44,21 +36,153 @@ const userList = () => {
         },
         params: {
           type: "user",
-          per_page: 15,
+          page: page,
+          per_page: sizePerPage,
+          sort_field_name: sortBy.length ? sortBy[0].id : "id",
+          sort_field_order: sortBy.length
+            ? sortBy[0].desc
+              ? "desc"
+              : "asc"
+            : "desc",
+          search_text: searchText,
         },
       };
 
-      const data = await axios.get(user_list_url, config);
-      if (data.statusText == "OK") {
-        setUserData(data.data);
-        setStatus("success");
+      const result = await axios.get(user_list_url, config);
+      if (result.statusText == "OK") {
+        setUserData(result.data);
+        setTotalPage(result.data.meta.last_page);
+        setIsLoading(false);
       }
     } catch (e) {
-      setStatus("fail");
+      console.log(e);
+      setUserData([]);
+      setIsLoading(false);
     }
   }
 
-  console.log(userData.data);
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "User ID",
+        accessor: "id",
+      },
+      {
+        Header: "Name",
+        accessor: "name",
+      },
+      {
+        Header: "Email",
+        accessor: "email",
+      },
+      {
+        Header: "Is Verfied",
+        accessor: "is_verfied",
+        Cell: (props) => {
+          return props.value ? (
+            <CButton color="success">Verfied</CButton>
+          ) : (
+            <CButton color="danger">Not Verified</CButton>
+          );
+        },
+        disableSortBy: true,
+      },
+      {
+        Header: "Action",
+        accessor: "action",
+        Cell: (props) => {
+          const rowIdx = props.row.id;
+          return (
+            <>
+              <CButton color="primary" className="m-1">
+                <CIcon icon={cilBell} className="me-2" />
+                Edit
+              </CButton>
+              <CButton color="primary" className="m-1">
+                <CIcon icon={cilBell} className="me-2" />
+                View
+              </CButton>
+              <CButton color="primary" className="m-1">
+                <CIcon icon={cilBell} className="me-2" />
+                Delete
+              </CButton>
+            </>
+          );
+        },
+        disableSortBy: true,
+      },
+    ],
+    []
+  );
+
+  const tableData = React.useMemo(() => {
+    if (userData.data?.length) {
+      console.log(userData);
+      return userData?.data?.map((element) => {
+        return {
+          id: element.id,
+          name: element.name,
+          email: element.email,
+          is_verfied: element.is_verfied,
+        };
+      });
+    } else {
+      return [];
+    }
+  }, [userData]);
+
+  const tableInstance = useTable(
+    {
+      columns,
+      data: tableData,
+      manualSortBy: true,
+      manualPagination: true,
+      pageCount: totalPage,
+      initialState: {
+        sortBy: [
+          {
+            id: "id",
+            desc: true,
+          },
+        ],
+        pageIndex: page,
+        pageSize: sizePerPage,
+      },
+    },
+    useSortBy,
+    usePagination
+  );
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    canPreviousPage,
+    canNextPage,
+    pageCount,
+    state: { sortBy },
+  } = tableInstance;
+
+  useEffect(() => {
+    loadUserList();
+  }, [sortBy, page, searchText]);
+
+  // Invoke when user click to request another page.
+  const changePageHandler = (event) => {
+    const selected_pages = event.selected + 1;
+    console.log(selected_pages);
+    setPage(selected_pages);
+  };
+
+  const searchResult = (e) => {
+    const searchedText = e.target.value;
+    setSearchText(searchedText);
+    setPage(1);
+  };
+
+  console.log(tableData);
   return (
     <CCol xs={12}>
       <CCard className="mb-4">
@@ -66,48 +190,17 @@ const userList = () => {
           <strong>Users</strong> <small></small>
         </CCardHeader>
         <CCardBody>
-          <CTable bordered>
-            <CTableHead>
-              <CTableRow>
-                <CTableHeaderCell scope="col">#</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Name</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Email</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Is Verfied</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Action</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {userData.data?.map((item, key) => {
-                return (
-                  <>
-                    <CTableRow key={item.id}>
-                      <CTableDataCell>{item.id}</CTableDataCell>
-                      <CTableDataCell>{item.name}</CTableDataCell>
-                      <CTableDataCell>{item.email}</CTableDataCell>
-                      <CTableDataCell>
-                        {item.is_verfied == 1 ? "Yes" : "No"}
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <CButton color="primary" className="m-1">
-                          <CIcon icon={cilBell} className="me-2" />
-                          Edit
-                        </CButton>
-                        <CButton color="primary" className="m-1">
-                          <CIcon icon={cilBell} className="me-2" />
-                          View
-                        </CButton>
-                        <CButton color="primary" className="m-1">
-                          <CIcon icon={cilBell} className="me-2" />
-                          Delete
-                        </CButton>
-                      </CTableDataCell>
-                    </CTableRow>
-                  </>
-                );
-              })}
-            </CTableBody>
-          </CTable>
+          <CustomeTable
+            rows={rows}
+            prepareRow={prepareRow}
+            tableData={tableData}
+            headerGroups={headerGroups}
+            getTableBodyProps={getTableBodyProps}
+            isLoading={isLoading}
+            searchResult={searchResult}
+          />
         </CCardBody>
+        <Pagination sizePerPage={sizePerPage} totalPage={totalPage} changePageHandler={changePageHandler} />
       </CCard>
     </CCol>
   );

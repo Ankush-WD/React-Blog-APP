@@ -29,7 +29,7 @@ import { logOut } from '../../redux/slice/authSlice';
 const AppHeaderDropdown = () => {
   const despatch = useDispatch();
   const user  = useSelector((state)=> state.auth.user );
-  const profile_pic = user? user.media[0].original_url:avatar8;
+  const profile_pic = user.media[0]? user.media[0].original_url:avatar8;
 
   const logOutHandler =(e)=>{
     e.preventDefault;

@@ -41,7 +41,6 @@ const Register = () => {
     validationSchema: registerSchema,
     onSubmit: function (values) {
       const formData = new FormData();
-      console.log(values.name);
       formData.append("name", values.name);
       formData.append("email", values.email);
       formData.append("password", values.password);

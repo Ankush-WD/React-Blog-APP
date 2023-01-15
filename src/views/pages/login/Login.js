@@ -46,8 +46,8 @@ const Login = () => {
   // destructuring formik object;
   const { handleChange, handleBlur, touched, errors, values } = formik;
   useEffect(() => {
+    dispatch(clearStateValue());
     if (isLoggedIn) {
-      dispatch(clearStateValue());
       navigate("/dashboard");
     }
   }, [isLoggedIn]);

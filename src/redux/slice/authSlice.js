@@ -27,8 +27,6 @@ export const logIn = createAsyncThunk(
 export const register = createAsyncThunk(
   "auth/register",
   async (formData, thunkAPI) => {
-
-    console.log(JSON.stringify(formData));
     const register_url = process.env.REACT_APP_API_URL + "/v1/user/register";
 
     try {

@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const PubicRoutes =({ children })=> {
+const PublicRoutes =({ children })=> {
     const authUser = useSelector( state=> state.auth);
     
     if (authUser.isLoggedIn) {
@@ -11,4 +11,4 @@ const PubicRoutes =({ children })=> {
     return children;
 }
 
-export default PubicRoutes;
+export default PublicRoutes;

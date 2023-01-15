@@ -20,7 +20,7 @@ import registerSchema from "../../../validationSchema/registerSchema";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { register, clearStateValue } from "src/redux/slice/authSlice";
+import { register, clearStateValue } from ".././../../redux/slice/authSlice";
 
 const Register = () => {
   const { message, status } = useSelector((state) => state.auth);
@@ -41,7 +41,6 @@ const Register = () => {
     validationSchema: registerSchema,
     onSubmit: function (values) {
       const formData = new FormData();
-      console.log(values.name);
       formData.append("name", values.name);
       formData.append("email", values.email);
       formData.append("password", values.password);
@@ -54,11 +53,14 @@ const Register = () => {
   useEffect(() => {
     if (status == "success") {
       setTimeout(function () {
-        dispatch(clearStateValue());
         navigate("/login");
       }, 3000);
     }
   }, [status]);
+
+  useEffect(()=>{
+    dispatch(clearStateValue());
+  },[]);
 
   // destructuring formik object;
   const { handleSubmit, handleChange, handleBlur, touched, errors, values } =

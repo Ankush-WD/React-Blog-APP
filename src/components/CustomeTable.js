@@ -1,6 +1,6 @@
 import {
-    CCol,
-    CContainer,
+  CCol,
+  CContainer,
   CRow,
   CTable,
   CTableBody,
@@ -10,16 +10,19 @@ import {
   CTableRow,
 } from "@coreui/react";
 import React from "react";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const CustomeTable = (props) => {
   const {
+    sizePerPage,
     rows,
     prepareRow,
     tableData,
     headerGroups,
     getTableBodyProps,
     isLoading,
-    searchResult
+    searchResult,
   } = props;
   console.log(headerGroups);
   return (
@@ -83,9 +86,42 @@ const CustomeTable = (props) => {
               </CTableRow>
             )
           ) : (
-            <CTableRow>
-              <CTableDataCell colSpan={5}>Loading...</CTableDataCell>
-            </CTableRow>
+            <>
+              <CTableRow>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+              </CTableRow>
+              <CTableRow>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+                <CTableDataCell>
+                  <Skeleton height={30} />
+                </CTableDataCell>
+              </CTableRow>
+            </>
           )}
         </CTableBody>
       </CTable>

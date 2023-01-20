@@ -15,6 +15,7 @@ import Pagination from "../Pagination";
 import CustomeTable from "../CustomeTable";
 
 const userList = () => {
+
   const user = useSelector((state) => state.auth.user);
   const [isLoading, setIsLoading] = useState(true);
   const [totalPage, setTotalPage] = useState(0);
@@ -191,6 +192,7 @@ const userList = () => {
         </CCardHeader>
         <CCardBody>
           <CustomeTable
+            sizePerPage={sizePerPage}
             rows={rows}
             prepareRow={prepareRow}
             tableData={tableData}
@@ -200,7 +202,7 @@ const userList = () => {
             searchResult={searchResult}
           />
         </CCardBody>
-        <Pagination sizePerPage={sizePerPage} totalPage={totalPage} changePageHandler={changePageHandler} />
+        <Pagination sizePerPage={sizePerPage} totalPage={totalPage} changePageHandler={changePageHandler}  />
       </CCard>
     </CCol>
   );
